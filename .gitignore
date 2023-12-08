@@ -1,0 +1,10 @@
+# Project exclude paths
+/.gradle/
+/contactcard/build/
+/contactcard/build/intermediates/javac/debug/classes/
+/pushpermission/build/
+/pushpermission/build/intermediates/javac/debug/classes/
+/recognizer/build/
+/recognizer/build/intermediates/javac/debug/classes/
+/sealtalk/build/
+/sealtalk/build/intermediates/javac/debug/classes/

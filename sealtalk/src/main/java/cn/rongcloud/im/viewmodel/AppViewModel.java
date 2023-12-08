@@ -1,0 +1,202 @@
+package cn.rongcloud.im.viewmodel;
+
+import android.app.Application;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import androidx.annotation.NonNull;
+import androidx.arch.core.util.Function;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import cn.rongcloud.im.model.ChatRoomResult;
+import cn.rongcloud.im.model.Resource;
+import cn.rongcloud.im.model.VersionInfo;
+import cn.rongcloud.im.task.AppTask;
+import cn.rongcloud.im.utils.SingleSourceLiveData;
+import cn.rongcloud.im.utils.SingleSourceMapLiveData;
+import cn.rongcloud.im.utils.log.SLog;
+import io.rong.common.RLog;
+import io.rong.imkit.utils.language.LangUtils;
+import java.util.List;
+
+public class AppViewModel extends AndroidViewModel {
+
+    private static final String TAG = "AppViewModel";
+
+    private final AppTask appTask;
+    private String sealTalkVersionName;
+    private SingleSourceMapLiveData<Resource<VersionInfo>, Resource<VersionInfo.AndroidVersion>>
+            hasNew;
+    private MutableLiveData<String> sdkVersion = new MutableLiveData<>();
+    private MutableLiveData<String> sealTalkVersion = new MutableLiveData<>();
+    private SingleSourceLiveData<Resource<List<ChatRoomResult>>> chatRoomResultList =
+            new SingleSourceLiveData<>();
+    private MutableLiveData<LangUtils.RCLocale> languageLocal = new MutableLiveData<>();
+    private MutableLiveData<Boolean> debugMode = new MutableLiveData<>();
+
+    public AppViewModel(@NonNull Application application) {
+        super(application);
+        appTask = new AppTask(application);
+        sealTalkVersionName = getSealTalkVersion(application);
+
+        hasNew =
+                new SingleSourceMapLiveData<>(
+                        new Function<
+                                Resource<VersionInfo>, Resource<VersionInfo.AndroidVersion>>() {
+                            @Override
+                            public Resource<VersionInfo.AndroidVersion> apply(
+                                    Resource<VersionInfo> input) {
+                                if (input.data != null) {
+                                    SLog.d("ss_version", "input == " + input);
+                                    boolean hasNew = false;
+                                    String newVersion = input.data.getAndroidVersion().getVersion();
+                                    if (sealTalkVersionName != null) {
+                                        if (hasNewVersion(sealTalkVersionName, newVersion)) {
+                                            return new Resource<VersionInfo.AndroidVersion>(
+                                                    input.status,
+                                                    input.data.getAndroidVersion(),
+                                                    input.code);
+                                        }
+                                    }
+                                }
+                                return new Resource<VersionInfo.AndroidVersion>(
+                                        input.status, null, input.code);
+                            }
+                        });
+
+        sdkVersion.setValue(getSdkVersion());
+        sealTalkVersion.setValue(sealTalkVersionName);
+        checkVersion();
+        requestChatRoomList();
+        // 语言
+        languageLocal.setValue(appTask.getLanguageLocal());
+
+        debugMode.setValue(appTask.isDebugMode());
+    }
+
+    /**
+     * 检测是否有新版本
+     *
+     * @return
+     */
+    public LiveData<Resource<VersionInfo.AndroidVersion>> getHasNewVersion() {
+        return hasNew;
+    }
+
+    /**
+     * 获取sdk 版本
+     *
+     * @return
+     */
+    public LiveData<String> getSDKVersion() {
+        return sdkVersion;
+    }
+
+    /**
+     * sealtalk 版本
+     *
+     * @return
+     */
+    public LiveData<String> getSealTalkVersion() {
+        return sealTalkVersion;
+    }
+
+    /** 检测版本 */
+    private void checkVersion() {
+        hasNew.setSource(appTask.getNewVersion());
+    }
+
+    /** 请求聊天室列表 */
+    public void requestChatRoomList() {
+        chatRoomResultList.setSource(appTask.getDiscoveryChatRoom());
+    }
+
+    /**
+     * 获取聊天室列表
+     *
+     * @return
+     */
+    public LiveData<Resource<List<ChatRoomResult>>> getChatRoomList() {
+        return chatRoomResultList;
+    }
+
+    /** 获取SDK版本 */
+    private String getSdkVersion() {
+        return appTask.getSDKVersion();
+    }
+
+    /**
+     * 当前本地语音
+     *
+     * @return
+     */
+    public LiveData<LangUtils.RCLocale> getLanguageLocal() {
+        return languageLocal;
+    }
+
+    /**
+     * 获取 SealTalk 版本
+     *
+     * @param application
+     * @return
+     */
+    private String getSealTalkVersion(Context application) {
+        try {
+            PackageInfo packageInfo =
+                    application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+            return packageInfo.versionName;
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 比较版本
+     *
+     * @param currentVersion
+     * @param newVersion
+     * @return
+     */
+    private boolean hasNewVersion(String currentVersion, String newVersion) {
+        try {
+            String[] currentVersionArray = currentVersion.split("\\.");
+            String[] newVersionArray = newVersion.split("\\.");
+            if (currentVersionArray.length > 0 && newVersionArray.length > 0) {
+                for (int i = 0; i < newVersionArray.length; i++) {
+                    if (i > currentVersionArray.length - 1) {
+                        break;
+                    }
+                    if (Integer.parseInt(newVersionArray[i])
+                            > Integer.parseInt(currentVersionArray[i])) {
+                        return true;
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
+            RLog.e(TAG, "hasNewVersion:" + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * 切换语音
+     *
+     * @param selectedLocale
+     */
+    public void changeLanguage(LangUtils.RCLocale selectedLocale) {
+        if (appTask.changeLanguage(selectedLocale)) {
+            languageLocal.postValue(appTask.getLanguageLocal());
+        }
+    }
+
+    public LiveData<Boolean> getDebugMode() {
+        return debugMode;
+    }
+
+    public boolean isUltraGroupDebugMode() {
+        return appTask.isDebugMode() && appTask.isUltraGroupDebugMode();
+    }
+}

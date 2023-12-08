@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.rongcloud.im">
+
+    <!--用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!--用于访问GPS定位-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!--用于获取运营商信息，用于支持提供运营商信息相关的接口-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!--用于访问wifi网络信息，wifi信息会用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <!--用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <!--用于申请调用A-GPS模块-->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <!--如果设置了target >= 28 如果需要启动后台定位则必须声明这个权限-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <!--如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加这个权限声明-->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <!-- 数美 权限配置-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 数美 配置结束-->
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:name=".SealApp"
+        android:allowBackup="true"
+        android:icon="@drawable/seal_app_logo"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:supportsRtl="true"
+        android:resizeableActivity="false"
+        android:requestLegacyExternalStorage="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.activity.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="*"
+                    android:scheme="sealtalk" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="${applicationId}"
+                    android:pathPrefix="/conversationlist"
+                    android:scheme="rong" />
+                <data
+                    android:host="${applicationId}"
+                    android:pathPrefix="/conversation"
+                    android:scheme="rong" />
+                <data
+                    android:host="${applicationId}"
+                    android:pathPrefix="/push_message"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ui.activity.SelectCountryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SelectDataCenterActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        <intent-filter>
+            <action android:name="cn.rongcloud.im.ui.activity.MainActivity" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.ConversationActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+
+        <!--聚合会话列表-->
+        <activity
+            android:name=".ui.activity.SubConversationListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+        <!--聚合会话列表-->
+        <activity
+            android:name=".ui.activity.NewFriendListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".ui.activity.GroupNoticeListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".ui.activity.SealSearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SealSearchUltraGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SearchFriendActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SearchHistoryMessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SearchMessageSelectActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.GroupListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.PublicServiceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.PublicServiceSearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.PublicServiceInfoActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="${applicationId}"
+                    android:pathPrefix="/publicServiceProfile"
+                    android:scheme="rong" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="${applicationId}"
+                    android:pathPrefix="/publicServiceInfo"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.AccountSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ChangeLanguageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.AboutSealTalkActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.SealTalkDebugTestActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.WebViewActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.PrivateChatSettingActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.SystemSettingActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.GroupDetailActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.GroupMemberListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.GroupNoticeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.UserDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SelectSingleFriendActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SelectGroupMemberActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SelectGroupMemberAllowEmptyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SelectFriendExcludeGroupActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.SelectForwardCreateChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SelectCreateGroupActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".ui.activity.ForwardActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activity.MyAccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UpdateNameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UpdateStAccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UpdateGenderActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.CreateGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.EditAliasActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.PrivacyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UpdatePasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.BlackListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.GroupUserInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SelectChatBgActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ImagePreviewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.NewMessageRemindActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.MessageDonotDisturbSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.MemberMentionedExActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.QrCodeDisplayActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.QrCodeDisplayWindowActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/TranslucentNoTitleActivity" />
+
+        <!--        <activity-->
+        <!--            android:name=".ui.activity.SealPicturePagerActivity"-->
+        <!--            android:screenOrientation="portrait"-->
+        <!--            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />-->
+        <activity
+            android:name=".ui.activity.JoinGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.GroupManagerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.GroupManagementsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.GroupSetManagementsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.GroupSetNewGroupOwnerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.GroupCopyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.GroupExitedListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ClearChatMessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.EditUserDescribeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SelectForwardMoreContactActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ForwardSelectedDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ScanActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.AddFriendActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.AddFriendFromContactActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.InviteFriendFromContactActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.RequestContactPermissionActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.PokeInviteChatActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/DeepBlackTranslucentNoTitleActivity" />
+
+        <activity
+            android:name=".ui.activity.MultiDeleteFriendsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".ui.activity.TranslationSettingActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.activity.TranslationLanguageListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.test.BindChatRTCRoomActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.activity.ProxySettingActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
+
+        <!-- 请将CHANNAL改为app的发布渠道 < -->
+        <meta-data
+            android:name="InstallChannel"
+            android:value="CHANNAL" />
+
+        <!-- 高德地图-->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="${MAP_KEY}" />
+
+        <!-- push start-->
+        <receiver
+            android:name=".push.SealNotificationReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="io.rong.push.intent.MESSAGE_ARRIVED" />
+                <action android:name="io.rong.push.intent.MESSAGE_CLICKED" />
+                <action android:name="io.rong.push.intent.THIRD_PARTY_PUSH_STATE" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".ui.activity.GroupReadReceiptDetailActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 微信 接收微信的请求及返回值 -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:taskAffinity="net.sourceforge.simcpux"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity
+            android:name="io.rong.sight.player.SightPlayerActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:supportsRtl="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="${applicationId}"
+                    android:pathPrefix="/sight/player"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+
+
+
+        <!-- bugly 配置 APP ID -->
+        <!--
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="您申请 BUGLY 的 AppId" />
+        -->
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/rc_file_path" />
+        </provider>
+
+        <!--超级群-->
+
+        <activity
+            android:name=".ui.activity.UltraGroupConversationListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UltraGroupUnreadMentionDigestsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UltraGroupConversationListPickerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UltraConversationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UltraGroupChannelMemberSetting"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UltraGroupChannelAddMemberActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UltraGroupSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UltraSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SelectUltraCreateGroupActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".ui.activity.CreateUltraGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.CreateChannelActivity"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".ui.test.PushConfigActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.test.DiscussionActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.test.ChatRoomStatusActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.test.ChatRoomStatusDeatilActivity"
+            android:screenOrientation="portrait" />
+
+        <!--消息扩展-->
+        <activity
+            android:name=".ui.test.MsgExpansionConversationListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.test.MessageExpansionDetailActivity"
+            android:screenOrientation="portrait" />
+        <!--消息送达-->
+        <activity
+            android:name=".ui.test.MsgDeliveryConversationListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+          android:name=".ui.test.MsgDeliveryTestActivity"
+          android:screenOrientation="portrait" />
+        <!--群消息送达百分比报告-->
+        <activity
+          android:name=".ui.test.GroupMsgDeliveryConversationListActivity"
+          android:screenOrientation="portrait" />
+        <activity
+          android:name=".ui.test.GroupMsgDeliveryTestActivity"
+          android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.test.TagTestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.test.ShortageConversationListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.test.ShortageDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.test.GRRSenderTestActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.test.GRRConversationListTestActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.test.GRRReceiverTestActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.test.GRRDetailTestActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.test.ChatRoomListenerTestActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.test.ChatRoomTestActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.test.DeviceInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.CommonConversationTestActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.test.CommonConversationListTestActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.UserGroupListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.UserGroupEditMemberActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.UserGroupEditActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.UserGroupChannelListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.UserGroupBindChannelActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.ConversationListByTargetIdsActivity"
+            android:screenOrientation="portrait"/>
+        <!-- end -->
+    </application>
+
+</manifest>
